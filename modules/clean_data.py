@@ -104,6 +104,27 @@ def clean_data(data):
 
     return data
 
+def get_pipeline():
+    #loads pretrained pipeline
+
+    # Get the path of the current script file:
+    current_file = Path(__file__).resolve()
+
+    # Get the parent directory of the current file:
+    current_dir = current_file.parent
+
+    # Now, join paths in a platform-independent way:
+    pipeline_path = current_dir.parent / "models" / "preprocessador.pkl"
+
+    our_pipeline = pd.read_csv(pipeline_path)
+
+    return our_pipeline
+
+def encode_prediction(X):
+    pipelinez = get_pipeline()
+    X = pipelinez.transform(X)
+    return X
+
 def scale_and_encode(data):
     #scales and encodes the data:
 
@@ -174,6 +195,29 @@ def load_model():
 
     return model
 
+def construct_df(driver, laptime, lapnumber, stint, compound, tyrelife,
+                 position, airtemp, humidity, pressure, rainfall, tracktemp,
+                 eventyear, grandprix, lappct):
+    proto_df = {
+        'Driver': driver,
+        'LapTime': laptime,
+        'LapNumber': lapnumber,
+        'Stint': stint,
+        'Compound': compound,
+        'TyreLife': tyrelife,
+       'Position': position,
+       'AirTemp':airtemp,
+       'Humidity': humidity,
+       'Pressure': pressure,
+       'Rainfall': rainfall,
+       'TrackTemp': tracktemp,
+       'Event_Year':eventyear,
+       'GrandPrix': grandprix,
+       'LapPct': lappct
+    }
+
+    return pd.DataFrame(proto_df, index = [0])
+
 def get_mae(y,y_pred):
     #gets mean absolute error
 
@@ -189,6 +233,10 @@ X = data.drop(columns = ['passthrough_cols__LapTime'])
 y = data['passthrough_cols__LapTime']
 
 model = load_model()
+
+X = construct_df('VER', 90, 2, 1, 'SOFT', 4, 1, 30, 30, 1013, True, 50, 2022, 'Silverstone', 1)
+
+X = encode_prediction(X)
 
 y_pred = model.predict(X)
 
