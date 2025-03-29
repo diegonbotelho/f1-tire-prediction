@@ -1,2 +1,5 @@
 raw_data/*
 cache/*
+models/*
+notebooks/random_forest_modelo.pkl
+
