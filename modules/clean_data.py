@@ -6,6 +6,9 @@ from sklearn.preprocessing import OneHotEncoder, StandardScaler, MinMaxScaler, R
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
 from sklearn.impute import SimpleImputer
+import joblib
+from sklearn.ensemble import RandomForestRegressor
+import numpy as np
 
 #remove future downcasting warning
 pd.set_option('future.no_silent_downcasting', True)
@@ -154,3 +157,39 @@ def scale_and_encode(data):
     data = pd.DataFrame(data, columns=numeric_preprocessor.get_feature_names_out())
 
     return data
+
+def load_model():
+    #loads the saved model
+
+    # Get the path of the current script file:
+    current_file = Path(__file__).resolve()
+
+    # Get the parent directory of the current file:
+    current_dir = current_file.parent
+
+    # Now, join paths in a platform-independent way:
+    model_path = current_dir.parent / "models" / "random_forest_modelo.pkl"
+
+    model = joblib.load(model_path)
+
+    return model
+
+def get_mae(y,y_pred):
+    #gets mean absolute error
+
+    result = 0
+    for i,j in zip(y,y_pred):
+        result += np.abs(i-j)
+
+    return result/len(y)
+
+data = scale_and_encode(clean_data(get_data()))
+
+X = data.drop(columns = ['passthrough_cols__LapTime'])
+y = data['passthrough_cols__LapTime']
+
+model = load_model()
+
+y_pred = model.predict(X)
+
+print(get_mae(y,y_pred))
