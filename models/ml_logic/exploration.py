@@ -9,12 +9,30 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 from pathlib import Path
-from ml_logic.data import load_raw_data
+from models.ml_logic.data_Marcelo import load_raw_data
+
+def get_data():
+    """
+    Loads the raw data from CSV file
+    Returns:
+        pd.DataFrame: Raw data
+    """
+    # Get the path of the current script file:
+    current_file = Path(__file__).resolve()
+
+    # Get the parent directory of the current file:
+    project_root = current_file.parent.parent.parent
+
+    # Now, join paths in a platform-independent way:
+    data_path = project_root / "raw_data" / "df_all_races.csv"
+    data = pd.read_csv(data_path)
+
+    return data
 
 def analyze_bahrain_2024():
     """Analyze Bahrain 2024 as example race"""
     # Load and filter data
-    df = load_raw_data()
+    df = get_data()
     bahrain = df[(df['GrandPrix'] == 'Bahrain') & (df['Event_Year'] == 2024)].copy()
 
     # Convert lap times to seconds

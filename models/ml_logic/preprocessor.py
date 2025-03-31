@@ -1,70 +1,79 @@
 """
-Replicates the preprocessing pipeline from the notebook
+Module for data preprocessing and model training
 """
 import pandas as pd
-import numpy as np
-from sklearn.base import BaseEstimator, TransformerMixin
+
+import joblib
+from pathlib import Path
+
+from sklearn.preprocessing import OneHotEncoder, MinMaxScaler, RobustScaler
 from sklearn.compose import ColumnTransformer
 from sklearn.pipeline import Pipeline
-from sklearn.preprocessing import OneHotEncoder, MinMaxScaler, RobustScaler
 from sklearn.impute import SimpleImputer
+from sklearn.ensemble import RandomForestRegressor
 
-class F1Preprocessor:
-    def __init__(self):
-        self.numeric_features = [
-            'LapNumber', 'Stint', 'TyreLife', 'Position',
-            'AirTemp', 'TrackTemp', 'Humidity', 'Pressure',
-            'Sector1Time', 'Sector2Time', 'Sector3Time'
-        ]
-        self.categorical_features = ['Driver', 'GrandPrix', 'Compound']
+def create_and_fit_pipeline(X, y):
+    """
+    Creates, fits and returns a complete pipeline with:
+    - Preprocessing (scaling + encoding)
+    - Model training
+    """
+    # 1. Preprocessing
+    num_transf_minmax = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('minmax_scaler', MinMaxScaler())
+    ])
 
-    def build_preprocessor(self):
-        # Numerical transformers
-        num_minmax = Pipeline([
-            ('imputer', SimpleImputer(strategy='median')),
-            ('scaler', MinMaxScaler())
-        ])
+    num_transf_robust = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('robust_scaler', RobustScaler())
+    ])
 
-        num_robust = Pipeline([
-            ('imputer', SimpleImputer(strategy='median')),
-            ('scaler', RobustScaler())
-        ])
+    num_transf_combined = Pipeline([
+        ('imputer', SimpleImputer(strategy='median')),
+        ('robust_scaler', RobustScaler()),
+        ('minmax_scaler', MinMaxScaler())
+    ])
 
-        # Categorical transformer
-        cat_transformer = Pipeline([
-            ('encoder', OneHotEncoder(handle_unknown='ignore'))
-        ])
+    cat_transformer = Pipeline([
+        ('ohe', OneHotEncoder(handle_unknown='ignore', sparse_output=False))
+    ])
 
-        # Column transformer
-        preprocessor = ColumnTransformer(
-            transformers=[
-                ('num_minmax', num_minmax, ['Position', 'Stint', 'TyreLife']),
-                ('num_robust', num_robust, ['AirTemp', 'TrackTemp', 'Humidity']),
-                ('cat', cat_transformer, self.categorical_features)
-            ],
-            remainder='passthrough'
-        )
+    preprocessor = ColumnTransformer(
+        transformers=[
+            ('num_minmax', num_transf_minmax, ['Position', 'Stint', 'TyreLife']),
+            ('num_robust', num_transf_robust, ['AirTemp', 'TrackTemp', 'Humidity']),
+            ('num_combined', num_transf_combined, ['Pressure']),
+            ('cat', cat_transformer, ['Driver', 'GrandPrix', 'Compound'])
+        ],
+        remainder='drop'
+    )
 
-        return Pipeline([
-            ('preprocessor', preprocessor),
-            ('final_scaler', MinMaxScaler())
-        ])
+    # 2. Model
+    model = RandomForestRegressor()
 
-    def prepare_data(self, df):
-        """Replicates all preprocessing steps from the notebook"""
-        # Convert lap times to seconds
-        time_cols = ['Sector1Time', 'Sector2Time', 'Sector3Time', 'LapTime']
-        for col in time_cols:
-            if col in df.columns:
-                df[col] = pd.to_timedelta(df[col]).dt.total_seconds()
+    # 3. Pipeline
+    full_pipeline = Pipeline([
+        ('preprocessor', preprocessor),
+        ('model', model)
+    ])
 
-        # Calculate lap percentage
-        df['LapPct'] = df['LapNumber'] / df.groupby(['Event_Year', 'GrandPrix'])['LapNumber'].transform('max')
+    # 4. Train and return the pipeline
+    full_pipeline.fit(X, y)
+    return full_pipeline
 
-        # Remove outliers (same as notebook)
-        q1 = df['LapTime'].quantile(0.25)
-        q3 = df['LapTime'].quantile(0.75)
-        iqr = q3 - q1
-        df = df[(df['LapTime'] >= q1 - 1.5*iqr) & (df['LapTime'] <= q3 + 1.5*iqr)]
+DEFAULT_MODEL_FILENAME = 'pipeline_model.pkl'
 
-        return df
+def get_raw_data_path():
+    """Returns the absolute path to the raw_data folder"""
+    return Path(__file__).parent.parent.parent / "raw_data"
+
+def save_pipeline(pipeline, filename=DEFAULT_MODEL_FILENAME):
+    """Saves the pipeline in the raw_data folder"""
+    save_dir = Path(__file__).parent.parent.parent / "raw_data"
+    save_path = save_dir / filename
+
+    # Save the model
+    joblib.dump(pipeline, save_path)
+    print(f"✅ Model save in: {save_path}")
+    return save_path
