@@ -4,9 +4,9 @@ fast.py - API for predicting F1 lap times
 
 import pandas as pd
 
-from fastapi import FastAPI
-from fastapi.middleware.cors import CORSMiddleware
-import uvicorn
+from fastapi import FastAPI # type: ignore
+from fastapi.middleware.cors import CORSMiddleware # type: ignore
+import uvicorn # type: ignore
 
 from pathlib import Path
 from models.ml_logic.model import load_pipeline
@@ -26,11 +26,6 @@ app.add_middleware(
     allow_methods=["*"],  # Allows all methods
     allow_headers=["*"],  # Allows all headers
 )
-
-def load_model():
-    """Load the trained model"""
-    model_path = Path(__file__).parent / "raw_data" / "pipeline_model.pkl"
-    return joblib.load(model_path)
 
 @app.get("/predict")
 def predict(Driver: str, LapNumber: float, Stint: float, Compound: str,
@@ -75,14 +70,13 @@ def predict(Driver: str, LapNumber: float, Stint: float, Compound: str,
         'GrandPrix': [GrandPrix]
     }
 
-
     X_pred = pd.DataFrame(input_data)
 
-    model = load_model()
+    model = load_pipeline()
     prediction = model.predict(X_pred)
     return {"predicted_lap_time": float(prediction[0])}
 
 
 @app.get("/")
-def root():
-    return {'message': 'Welcome to the F1 lap time prediction API'}
+def index():
+    return {'message': 'Hello'}

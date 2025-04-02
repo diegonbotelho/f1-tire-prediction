@@ -17,6 +17,6 @@ flake8>=4.0.0
 pytest>=7.0.0
 
 # API
-fastapi
+fastapi==0.108.0
 pytz
 uvicorn

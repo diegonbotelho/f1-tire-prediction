@@ -5,7 +5,7 @@ import joblib
 import pandas as pd
 from pathlib import Path
 
-DEFAULT_MODEL_FILENAME = 'pipeline_model.pkl'
+DEFAULT_MODEL_FILENAME = 'model_pipeline.pkl'
 
 def load_pipeline(filename=DEFAULT_MODEL_FILENAME):
     """Loads the pipeline from the raw_data folder correctly"""
@@ -15,11 +15,11 @@ def load_pipeline(filename=DEFAULT_MODEL_FILENAME):
 
 def predict(input_data):
     """
-    Faz previsões usando o pipeline carregado
+    Makes predictions using the loaded pipeline
     Args:
-        input_data (pd.DataFrame): Dados de entrada no mesmo formato do treino
+        input_data (pd.DataFrame): Input data in the same format as the training
     Returns:
-        array: Previsões do modelo
+        array: Model predictions
     """
     pipeline = load_pipeline()
     return pipeline.predict(input_data)

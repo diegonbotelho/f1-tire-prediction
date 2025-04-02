@@ -62,7 +62,7 @@ def create_and_fit_pipeline(X, y):
     full_pipeline.fit(X, y)
     return full_pipeline
 
-DEFAULT_MODEL_FILENAME = 'pipeline_model.pkl'
+DEFAULT_MODEL_FILENAME = 'model_pipeline.pkl'
 
 def get_raw_data_path():
     """Returns the absolute path to the raw_data folder"""

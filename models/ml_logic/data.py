@@ -81,35 +81,38 @@ def clean_data(data):
     # Remove LapTime outliers
     data = exclude_outliers(data, 'LapTime')
 
+    # Drops each line where TrackStatus is not 1:
+    # data = data[data['TrackStatus']==1]
+
     # Calculate lap percentage
     # data['LapPct'] = data['LapNumber'] / data.groupby(
     #     ['Event_Year', 'GrandPrix'])['LapNumber'].transform('max')
 
     return data
 
-# Teste isolado para data.py
+# Single test for data.py
 if __name__ == "__main__":
-    print("=== TESTE ISOLADO data.py ===")
+    print("=== ISOLATED TEST data.py ===")
 
-    # 1. Testar carregamento
-    print("\n1. Testando get_data()...")
+    # 1. Test charging
+    print("\n1. Testing get_data()...")
     raw_df = get_data()
-    print(f"✅ Dados carregados. Shape: {raw_df.shape}")
-    print(f"Colunas: {list(raw_df.columns)}")
+    print(f"✅ Uploaded data. Shape: {raw_df.shape}")
+    print(f"Columns: {list(raw_df.columns)}")
 
-    # 2. Testar limpeza
-    print("\n2. Testando clean_data()...")
+    # 2. Test cleaning
+    print("\n2. Testing clean_data()...")
     cleaned_df = clean_data(raw_df.copy())
-    print(f"✅ Dados limpos. Shape: {cleaned_df.shape}")
-    print(f"Colunas removidas: {set(raw_df.columns) - set(cleaned_df.columns)}")
+    print(f"✅ Clean data. Shape: {cleaned_df.shape}")
+    print(f"Columns removed: {set(raw_df.columns) - set(cleaned_df.columns)}")
 
-    # 3. Testar outliers
-    print("\n3. Testando exclude_outliers()...")
+    # 3. Test outliers
+    print("\n3. Testing exclude_outliers()...")
     before = cleaned_df.shape[0]
     no_outliers_df = exclude_outliers(cleaned_df, 'LapTime')
     after = no_outliers_df.shape[0]
-    print(f"✅ Outliers removidos: {before - after} registros")
+    print(f"✅ Outliers removed: {before - after} records")
     print(f"✅ Final Shape: {no_outliers_df.shape}")
     print(no_outliers_df.head(0))
 
-    print("\n=== TESTES COMPLETOS ===")
+    print("\n=== COMPLETE TESTS ===")
