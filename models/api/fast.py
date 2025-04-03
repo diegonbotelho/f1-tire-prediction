@@ -1,5 +1,5 @@
 """
-fast.py - API for predicting F1 lap times
+API for predicting F1 lap times
 """
 
 import pandas as pd

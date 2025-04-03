@@ -15,7 +15,7 @@ def load_pipeline(filename=DEFAULT_MODEL_FILENAME):
 
 def predict(input_data):
     """
-    Makes predictions using the loaded pipeline
+    Makes predictions using the loaded pipeline.
     Args:
         input_data (pd.DataFrame): Input data in the same format as the training
     Returns:

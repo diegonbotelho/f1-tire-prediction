@@ -75,7 +75,7 @@ def test_model_loading_and_prediction(test_data):
     assert hasattr(pipeline, 'predict'), "Loaded pipeline should have predict method"
     print("✓ Model loading successful")
 
-    # Simplified prediction test - usando apenas a primeira linha como no notebook
+    # Simplified prediction test
     single_prediction = pipeline.predict(test_data.iloc[:1,:])
 
     # Verificações básicas

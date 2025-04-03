@@ -1,4 +1,3 @@
-# data_extraction.py
 import pandas as pd
 import fastf1 as ff1 # type: ignore
 import os

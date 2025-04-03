@@ -1,5 +1,5 @@
 """
-train_model.py - Gera e salva o model_pipeline.pkl
+train_model.py - Generate and save model_pipeline.pkl
 """
 from pathlib import Path
 import pandas as pd
