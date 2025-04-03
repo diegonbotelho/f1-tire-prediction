@@ -27,15 +27,32 @@ Para executar este projeto, você precisará das seguintes bibliotecas Python:
 
 ## Tree
 
-├── raw_data/\
-├   └── f1_dataset.csv\
-├── modelos/\
-├   └── modelo_pneus.pkl\
-└── resultados/\
-├   └── graficos/\
-└── notebooks/\
-├   └── notebook.ipynb/\
-├── requirements.txt\
-├── setup.py\
-├── README.md\
-├── Makefile\
+f1-tire-prediction/
+├── Dockerfile
+├── requirements.txt
+├── setup.py|
+│
+├── raw_data/
+│   ├── df_all_races.csv
+│   └── pipeline_model.pkl
+│
+├── models/
+│   ├── __init__.py
+│   ├── api/
+│   │   ├── __init__.py
+│   │   |── fast.py
+│   │
+│   └── ml_logic/
+│       ├── __init__.py
+│       ├── data.py
+│       ├── preprocessor.py
+│       |── model.py
+|       |__ train_model.py
+│       |__ predict.py
+|
+├── tests/
+│   └── test_full_project.py
+│
+└── notebooks/
+    ├── exploratory_analysis.ipynb
+    └── pre-process_feature-selection.ipynb

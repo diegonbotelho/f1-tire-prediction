@@ -1,5 +1,5 @@
 """
-Module for data loading and cleaning operations
+Module for data loading and cleaning operations.
 """
 from pathlib import Path
 import pandas as pd

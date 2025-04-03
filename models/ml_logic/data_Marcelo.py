@@ -1,6 +1,6 @@
 
 """
-This module prepares and cleans the data
+This module prepares and cleans the data.
 """
 from pathlib import Path
 

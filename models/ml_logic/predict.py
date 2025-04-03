@@ -1,5 +1,5 @@
 """
-predict.py - Load the model and make predictions
+Load the model and make predictions
 """
 from pathlib import Path
 import pandas as pd
