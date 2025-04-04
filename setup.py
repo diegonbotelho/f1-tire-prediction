@@ -6,7 +6,7 @@ requirements = [x.strip() for x in content if "git+" not in x]
 
 setup(name='f1_tire_predictor',
       version="0.1.0",
-      description="F1 Lap Time Prediction Model for Tire Strategy Analysis",
+      description="F1 Lap Time Prediction Model for Tire Strategy",
       license="MIT",
       author="Diego Botelho",
       author_email="diego_nbotelho@hotmail.com",
