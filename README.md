@@ -26,7 +26,8 @@ Para executar este projeto, você precisará das seguintes bibliotecas Python:
 - `Tensor Flow`
 
 ## Tree
-
+```bash
+.
 f1-tire-prediction/
 ├── Dockerfile
 ├── requirements.txt
@@ -56,3 +57,4 @@ f1-tire-prediction/
 └── notebooks/
     ├── exploratory_analysis.ipynb
     └── pre-process_feature-selection.ipynb
+```
